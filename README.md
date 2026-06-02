@@ -1,5 +1,7 @@
 # Cherry Bounty Radar
 
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 Cherry Bounty Radar is a practical CLI for developers who want to find real, low-risk GitHub bounty issues before wasting time on noisy or unsafe tasks.
 
 It scans GitHub issues, extracts bounty signals, flags risky requirements, scores candidates, and generates `/attempt` + `/claim` workflow templates.
