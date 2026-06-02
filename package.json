@@ -1,0 +1,47 @@
+{
+  "name": "cherry-bounty-radar",
+  "version": "0.1.0",
+  "description": "CLI radar for finding real, low-risk GitHub bounty issues and generating attempt/claim templates.",
+  "type": "module",
+  "bin": {
+    "cherry-bounty": "dist/cli.js",
+    "cherry-bounty-radar": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "start": "node dist/cli.js"
+  },
+  "keywords": [
+    "github",
+    "bounty",
+    "algora",
+    "open-source",
+    "cli",
+    "issues"
+  ],
+  "author": "huangse199",
+  "license": "MIT",
+  "dependencies": {
+    "@octokit/rest": "^22.0.1",
+    "chalk": "^5.6.2",
+    "commander": "^14.0.3",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
