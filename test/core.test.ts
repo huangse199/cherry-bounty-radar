@@ -12,6 +12,9 @@ function candidate(overrides: Partial<IssueCandidate> = {}): IssueCandidate {
     state: "open",
     body: "",
     commentsCount: 0,
+    attemptCount: 0,
+    claimCount: 0,
+    relatedPrCount: 0,
     labels: [],
     repository: {
       owner: "acme",

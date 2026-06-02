@@ -3,6 +3,7 @@ import chalk from "chalk"
 import { Command } from "commander"
 import { createGithubClient, getIssueCandidate, getUserPullRequests, searchIssues } from "./github/client.js"
 import { renderInspectMarkdown, renderScanMarkdown, renderWatchMarkdown } from "./output/markdown.js"
+import { renderJson, writeOrPrint } from "./output/writer.js"
 import { renderGeneratedTemplates } from "./templates/bountyTemplates.js"
 import { getGithubToken, parseGithubIssueUrl } from "./utils.js"
 
@@ -22,6 +23,8 @@ program
   .option("--max-comments <count>", "最大评论数", parseNumber)
   .option("--limit <count>", "扫描数量", parseNumber, 20)
   .option("--include-risky", "包含高风险候选", false)
+  .option("--json", "输出 JSON 格式", false)
+  .option("-o, --output <file>", "写入报告文件，而不是输出到终端")
   .option("--token <token>", "GitHub token，也可用 GITHUB_TOKEN/GH_TOKEN")
   .action(async (options) => {
     const octokit = createGithubClient(getGithubToken(options.token))
@@ -34,19 +37,21 @@ program
       limit: options.limit,
       includeRisky: options.includeRisky,
     })
-    console.log(renderScanMarkdown(candidates))
+    await writeOrPrint(options.json ? renderJson(candidates) : renderScanMarkdown(candidates), options.output)
   })
 
 program
   .command("inspect")
   .description("分析单个 GitHub issue 的赏金信号、风险和推荐分")
   .argument("<issue-url>", "GitHub issue URL")
+  .option("--json", "输出 JSON 格式", false)
+  .option("-o, --output <file>", "写入报告文件，而不是输出到终端")
   .option("--token <token>", "GitHub token，也可用 GITHUB_TOKEN/GH_TOKEN")
   .action(async (issueUrl, options) => {
     const { owner, repo, issueNumber } = parseGithubIssueUrl(issueUrl)
     const octokit = createGithubClient(getGithubToken(options.token))
     const candidate = await getIssueCandidate(octokit, owner, repo, issueNumber)
-    console.log(renderInspectMarkdown(candidate))
+    await writeOrPrint(options.json ? renderJson(candidate) : renderInspectMarkdown(candidate), options.output)
   })
 
 program
@@ -54,12 +59,13 @@ program
   .description("为 bounty issue 生成 /attempt、PR body、follow-up 模板")
   .argument("<issue-url>", "GitHub issue URL")
   .option("--pr-url <url>", "已创建 PR 的 URL")
+  .option("-o, --output <file>", "写入模板文件，而不是输出到终端")
   .option("--token <token>", "GitHub token，也可用 GITHUB_TOKEN/GH_TOKEN")
   .action(async (issueUrl, options) => {
     const { owner, repo, issueNumber } = parseGithubIssueUrl(issueUrl)
     const octokit = createGithubClient(getGithubToken(options.token))
     const candidate = await getIssueCandidate(octokit, owner, repo, issueNumber)
-    console.log(renderGeneratedTemplates(candidate, options.prUrl))
+    await writeOrPrint(renderGeneratedTemplates(candidate, options.prUrl), options.output)
   })
 
 program
@@ -67,11 +73,13 @@ program
   .description("跟踪指定用户的开放 PR 与 claim 信号")
   .requiredOption("-u, --user <user>", "GitHub 用户名")
   .option("--limit <count>", "最多检查 PR 数", parseNumber, 20)
+  .option("--json", "输出 JSON 格式", false)
+  .option("-o, --output <file>", "写入报告文件，而不是输出到终端")
   .option("--token <token>", "GitHub token，也可用 GITHUB_TOKEN/GH_TOKEN")
   .action(async (options) => {
     const octokit = createGithubClient(getGithubToken(options.token))
     const prs = await getUserPullRequests(octokit, options.user, options.limit)
-    console.log(renderWatchMarkdown(prs))
+    await writeOrPrint(options.json ? renderJson(prs) : renderWatchMarkdown(prs), options.output)
   })
 
 program.configureOutput({

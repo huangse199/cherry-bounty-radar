@@ -17,6 +17,9 @@ export interface IssueCandidate {
   state: string
   body: string
   commentsCount: number
+  attemptCount: number
+  claimCount: number
+  relatedPrCount: number
   labels: string[]
   createdAt?: string
   updatedAt?: string

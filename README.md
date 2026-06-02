@@ -65,6 +65,20 @@ $env:GITHUB_TOKEN="ghp_your_token_here"
 cherry-bounty scan --language TypeScript --min-bounty 10 --max-comments 15 --limit 20
 ```
 
+Write a Markdown report to a file:
+
+```bash
+cherry-bounty scan --language TypeScript --limit 20 --output bounty-report.md
+```
+
+Output structured JSON:
+
+```bash
+cherry-bounty scan --query 'Algora bounty' --limit 10 --json
+```
+
+The scan report includes bounty amount, score, risk flags, attempt count, claim count, and related PR count.
+
 Custom query:
 
 ```bash

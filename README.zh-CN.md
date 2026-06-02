@@ -65,6 +65,20 @@ $env:GITHUB_TOKEN="ghp_your_token_here"
 cherry-bounty scan --language TypeScript --min-bounty 10 --max-comments 15 --limit 20
 ```
 
+把 Markdown 报告写入文件：
+
+```bash
+cherry-bounty scan --language TypeScript --limit 20 --output bounty-report.md
+```
+
+输出结构化 JSON：
+
+```bash
+cherry-bounty scan --query 'Algora bounty' --limit 10 --json
+```
+
+扫描报告会展示赏金金额、评分、风险标签、attempt 数、claim 数和相关 PR 数。
+
 自定义查询：
 
 ```bash

@@ -17,6 +17,7 @@ export function renderScanMarkdown(candidates: IssueCandidate[]) {
     lines.push(`- 分数：${candidate.score.total}/100（${candidate.score.recommendation}）`)
     lines.push(`- 技术栈：${candidate.repository.primaryLanguage ?? "未知"}`)
     lines.push(`- 评论数：${candidate.commentsCount}`)
+    lines.push(`- Attempt/Claim/相关PR：${candidate.attemptCount}/${candidate.claimCount}/${candidate.relatedPrCount}`)
     lines.push(`- 信号：${candidate.bountySignals.join(", ") || "无"}`)
     lines.push(
       `- 风险：${candidate.riskFlags.map((flag) => `${flag.level}:${flag.message}`).join("；") || "未发现明显风险"}`,
@@ -41,6 +42,9 @@ export function renderInspectMarkdown(candidate: IssueCandidate) {
     `- Repository archived: ${candidate.repository.isArchived ? "yes" : "no"}`,
     `- Language: ${candidate.repository.primaryLanguage ?? "unknown"}`,
     `- Comments: ${candidate.commentsCount}`,
+    `- Attempts: ${candidate.attemptCount}`,
+    `- Claims: ${candidate.claimCount}`,
+    `- Related PRs: ${candidate.relatedPrCount}`,
     `- Signals: ${candidate.bountySignals.join(", ") || "none"}`,
     "",
     "## Risk flags",
@@ -67,11 +71,15 @@ export function renderWatchMarkdown(prs: PullRequestStatus[]) {
   }
 
   for (const pr of prs) {
+    const checkSummary = pr.checks.length
+      ? pr.checks.map((check) => `${check.name}:${check.conclusion ?? check.status}`).join(", ")
+      : "未发现"
     lines.push(`## ${pr.repository}#${pr.number}`)
     lines.push(`- 标题：${pr.title}`)
     lines.push(`- URL：${pr.url}`)
     lines.push(`- 状态：${pr.state}`)
     lines.push(`- Merge state：${pr.mergeStateStatus ?? "unknown"}`)
+    lines.push(`- Checks：${checkSummary}`)
     lines.push(`- Claim：${pr.claimSignals.join(", ") || "未发现"}`)
     lines.push("")
   }
